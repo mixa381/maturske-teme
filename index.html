@@ -1,0 +1,843 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Портал за избор матурских тема</title>
+  <style>
+  :root {
+    --ink: #1f2937;
+    --shadow-card: 0 10px 24px rgba(21, 44, 99, 0.1);
+    --shadow-card-hover: 0 14px 28px rgba(21, 44, 99, 0.14);
+  }
+
+  body {
+    margin: 0;
+    font-family: "Trebuchet MS", "Segoe UI", Tahoma, sans-serif;
+    background: linear-gradient(180deg, #eef4ff 0%, #dbe6fa 100%);
+    background-attachment: fixed;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+
+  header{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    overflow: hidden;
+    background: linear-gradient(130deg, #0f1f57 0%, #1e3a8a 42%, #3559cc 100%);
+    color: white;
+    border-bottom: 1px solid rgba(255,255,255,0.16);
+    padding: 14px 16px 16px;
+    box-shadow: 0 14px 32px rgba(12,20,49,0.28);
+  }
+
+  header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 10% 20%, rgba(255,255,255,0.2), transparent 38%),
+      radial-gradient(circle at 88% 75%, rgba(255,221,153,0.28), transparent 42%);
+    pointer-events: none;
+  }
+
+  header::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 30px 30px;
+    opacity: 0.25;
+    mix-blend-mode: soft-light;
+    pointer-events: none;
+  }
+
+  .header-inner{
+    position: relative;
+    z-index: 1;
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 12px;
+  }
+
+  .app-icon{
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(145deg, rgba(255,255,255,0.34), rgba(255,255,255,0.12));
+    border: 1px solid rgba(255,255,255,0.35);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 8px 18px rgba(7,11,31,0.34);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  .header-copy {
+    min-width: 0;
+  }
+
+  .header-title{
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.28);
+  }
+
+  .header-subtitle {
+    margin-top: 2px;
+    font-size: 12px;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: rgba(234,242,255,0.92);
+  }
+
+  @keyframes headerFloat {
+    from { transform: translateY(0); }
+    to { transform: translateY(-2px); }
+  }
+
+  .header-inner {
+    animation: headerFloat 1.4s ease-out both;
+  }
+
+  .container {
+    position: relative;
+    max-width: 1000px;
+    margin: 26px auto 34px;
+    padding: 0 18px;
+  }
+
+  .card {
+    position: relative;
+    overflow: hidden;
+    background: #ffffff;
+    border: none;
+    border-radius: 16px;
+    padding: 19px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  #topics .card {
+    border-left: 4px solid #2f55c9;
+    padding-left: 16px;
+    background: #ffffff;
+  }
+
+  #topics .card.topic-taken {
+    background: #f1f3f7;
+    border-left-color: #dc2626;
+    box-shadow: 0 8px 18px rgba(107, 114, 128, 0.18);
+  }
+
+  #topics .card.topic-taken .topic-title {
+    color: #4b5563;
+  }
+
+  #topics .card.topic-taken .topic-meta {
+    color: #6b7280;
+  }
+
+  h2 {
+    margin-top: 0;
+    font-size: 18px;
+    color: #1e3a8a;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  input {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #cfd9ec;
+    background: #fcfdff;
+    width: 100%;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: #2f55c9;
+    box-shadow: 0 0 0 3px rgba(47,85,201,0.16);
+    outline: none;
+  }
+
+  select {
+    border-radius: 10px;
+    border: 1px solid #cfd9ec;
+    background: #fcfdff;
+  }
+
+  button {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    background: #1e3a8a;
+    color: white;
+    transition: 0.2s;
+  }
+
+  button:hover {
+    background: #162d6b;
+  }
+
+  button.secondary {
+    background: #e5e7eb;
+    color: #111;
+  }
+
+  button.secondary:hover {
+    background: #d1d5db;
+  }
+
+  button.danger {
+    background: #dc2626;
+  }
+
+  button.danger:hover {
+    background: #b91c1c;
+  }
+
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .status {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  .success { color: #15803d; }
+  .error { color: #b91c1c; }
+
+  .topic-title {
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  .topic-meta {
+    font-size: 13px;
+    color: #666;
+    margin-top: 4px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-top: 6px;
+  }
+
+  .badge.free {
+    background: #ecfdf5;
+    color: #15803d;
+  }
+
+  .badge.taken {
+    background: #fef2f2;
+    color: #b91c1c;
+  }
+
+  .fab {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    border: none;
+    background: #1e3a8a;
+    color: white;
+    font-size: 30px;
+    line-height: 1;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.22);
+    cursor: pointer;
+    z-index: 120;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .fab:hover {
+    background: #162d6b;
+  }
+
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  .modal {
+    width: 100%;
+    max-width: 520px;
+    background: linear-gradient(175deg, #ffffff 0%, #f6faff 100%);
+    border: 1px solid #d6e1f3;
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 20px 54px rgba(15,27,68,0.3);
+  }
+
+  .modal h3 {
+    margin: 0 0 8px 0;
+    color: #1e3a8a;
+    font-size: 18px;
+  }
+
+  .modal p {
+    margin: 0 0 14px 0;
+    color: #555;
+    font-size: 14px;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 120px;
+    resize: vertical;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    font-family: inherit;
+    box-sizing: border-box;
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card,
+    .header-inner {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+  /* mobile optimizacija koja ne radi na apps script */
+  @media (max-width: 600px){
+
+    header {
+      padding: 12px;
+    }
+
+    .header-inner {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .header-title {
+      font-size: 16px;
+      white-space: normal;
+    }
+
+    .header-subtitle {
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    .container {
+      margin: 18px auto 24px;
+      padding: 0 12px;
+    }
+
+    .card {
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+    }
+
+    #topics .card {
+      border-left-width: 3px;
+      padding-left: 14px;
+    }
+
+      #topics .card.topic-taken {
+        border-left-width: 3px;
+      }
+
+    .row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    button {
+      width: 100%;
+    }
+
+    .fab {
+      right: 14px;
+      bottom: 14px;
+      width: 54px;
+      height: 54px;
+      font-size: 28px;
+    }
+
+    .modal {
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .modal-actions {
+      flex-direction: column;
+    }
+
+    .modal-actions button {
+      width: 100%;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="app-icon" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"
+                stroke="white" stroke-width="2" opacity="0.9"/>
+          <path d="M8 8h8M8 12h8M8 16h6"
+                stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+        </svg>
+      </div>
+
+      <div class="header-copy">
+        <div class="header-title">
+          Портал за избор матурских тема
+        </div>
+        <div class="header-subtitle">Школска година 2025/2026</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <div id="loginBox" class="card">
+    <h2>Пријава ученика</h2>
+    <div class="row">
+      <input id="token" placeholder="Унесите приступни код (нпр. IV9-2526-7K3P)">
+      <button onclick="doLogin()">Пријави се</button>
+    </div>
+    <div id="loginMsg" class="status"></div>
+  </div>
+
+  <div id="app" style="display:none;">
+  <div class="card">
+    <div class="row">
+      <div>
+        <strong id="who"></strong><br>
+        <span id="myChoiceLine" class="topic-meta"></span>
+      </div>
+      <button class="secondary" onclick="logout()">Одјава</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <div style="flex:1; min-width:220px;">
+        <label for="subjectFilter" style="display:block; margin-bottom:6px; font-size:14px; font-weight:600; color:#1e3a8a;">
+          Филтрирај по предмету
+        </label>
+        <select id="subjectFilter" onchange="applyFilter()" style="padding:12px; border-radius:8px; border:1px solid #d1d5db; width:100%; font-size:14px; box-sizing:border-box;">
+          <option value="">Сви предмети</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="topics"></div>
+  <div id="pagination" class="card" style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;"></div>
+
+  </div>
+</div>
+
+<button id="requestFab" class="fab" onclick="openRequestModal()" title="Predloži novu temu" style="display:none;">
+  +
+</button>
+
+<div id="requestModal" class="modal-backdrop">
+  <div class="modal">
+    <h3>Предлог нове теме</h3>
+    <p>Овде можете послати предлог за нову матурску тему. Уз сваки предлог бележи се име ученика, па вас молимо да ову опцију користите одговорно и искључиво за озбиљне и примерене предлоге. Свака злоупотреба биће дисциплински санкционисана.</p>
+
+    <textarea id="requestText" placeholder="Унесите назив или опис предлога теме..."></textarea>
+    <div id="requestMsg" class="status"></div>
+
+    <div class="modal-actions">
+      <button class="secondary" onclick="closeRequestModal()">Откажи</button>
+      <button onclick="submitTopicRequest()">Пошаљи предлог</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+let TOKEN = localStorage.getItem("token") || "";
+let MY_TOPIC_ID = null;
+let ALL_TOPICS = [];
+
+function setMsg(text, type="") {
+  const el = document.getElementById("loginMsg");
+  el.className = "status " + type;
+  el.textContent = text;
+}
+
+function doLogin() {
+  const token = document.getElementById("token").value.trim();
+  if (!token) { setMsg("Molimo unesite kod.", "error"); return; }
+
+  setMsg("Проверавање кода...", "");
+
+  fetch('/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (!res.ok) {
+      setMsg(res.error, "error");
+      return;
+    }
+
+    TOKEN = token;
+    localStorage.setItem("token", token);
+    setMsg("Успешно сте пријављени.", "success");
+
+    setTimeout(() => loadAll(), 600);
+  })
+  .catch(err => {
+    setMsg("Greska pri konekciji: " + err.message, "error");
+  });
+}
+
+function loadAll() {
+  fetch('/api/topics', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: TOKEN })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (!res.ok) {
+      setMsg(res.error, "error");
+      return;
+    }
+
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    document.getElementById("requestFab").style.display = "flex";
+    document.getElementById("who").textContent = res.student.ime + " (" + res.student.smer + ")";
+    
+    // Dohvati trenutni izbor
+    fetch('/api/my-choice', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: TOKEN })
+    })
+    .then(r => r.json())
+    .then(choiceRes => {
+      MY_TOPIC_ID = (choiceRes && choiceRes.ok) ? choiceRes.topic_id : null;
+      ALL_TOPICS = res.topics || [];
+      populateSubjectFilter(ALL_TOPICS);
+      applyFilter();
+    });
+  })
+  .catch(err => {
+    setMsg("Greska pri konekciji: " + err.message, "error");
+  });
+}
+
+function getMyTopicTitle() {
+  if (!MY_TOPIC_ID) return null;
+  const topic = ALL_TOPICS.find(t => t.topic_id === MY_TOPIC_ID);
+  return topic ? topic.naslov : MY_TOPIC_ID; // ako nije pronađeno, ostavi ID
+}
+
+function renderTopics(topics) {
+  const el = document.getElementById("topics");
+  el.innerHTML = "";
+
+  const myLine = document.getElementById("myChoiceLine");
+  myLine.textContent = MY_TOPIC_ID ?
+    "Изабрана тема: " + getMyTopicTitle() :
+    "Тренутно немате изабрану тему.";
+
+  topics.forEach(t => {
+    const isMine = MY_TOPIC_ID && (t.topic_id === MY_TOPIC_ID);
+    const isTaken = t.status === "ЗАУЗЕТО";
+
+    const card = document.createElement("div");
+    card.className = "card" + (isTaken ? " topic-taken" : "");
+
+    card.innerHTML = `
+      <div class="row">
+        <div>
+          <div class="topic-title">${t.naslov}</div>
+          <div class="topic-meta">
+            ${t.predmet ? "Предмет: " + t.predmet : ""}
+            ${t.smer ? " • Смер: " + t.smer : ""}
+          </div>
+          <div class="badge ${isTaken ? "taken" : "free"}">
+            ${t.status}${t.uzeo ? " – " + t.uzeo : ""}
+          </div>
+        </div>
+        <div>
+          ${isMine ? 
+            `<button class="danger" onclick="unreserve('${t.topic_id}')">Одрезервиши</button>` :
+            `<button ${isTaken || MY_TOPIC_ID ? "disabled" : ""}
+              onclick="reserve('${t.topic_id}')">Резервиши</button>`
+          }
+        </div>
+      </div>
+    `;
+    el.appendChild(card);
+  });
+}
+
+function reserve(topic_id) {
+  if (!confirm("Да ли сте сигурни да желите да резервишете ову тему?")) return;
+
+  fetch('/api/reserve', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: TOKEN, topic_id })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (!res.ok) {
+      alert(res.error || "Дошло је до грешке.");
+      return;
+    }
+    loadAll();
+  })
+  .catch(err => {
+    alert("Greska pri konekciji: " + err.message);
+  });
+}
+
+function unreserve(topic_id) {
+  if (!confirm("Да ли сте сигурни да желите да поништите резервацију?")) return;
+
+  fetch('/api/unreserve', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: TOKEN, topic_id })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (!res.ok) {
+      alert(res.error || "Дошло је до грешке.");
+      return;
+    }
+    loadAll();
+  })
+  .catch(err => {
+    alert("Greska pri konekciji: " + err.message);
+  });
+}
+
+function logout() {
+  localStorage.removeItem("token");
+  document.getElementById("requestFab").style.display = "none";
+  location.reload();
+}
+
+function openRequestModal() {
+  document.getElementById("requestModal").style.display = "flex";
+  document.getElementById("requestMsg").textContent = "";
+  document.getElementById("requestMsg").className = "status";
+  document.getElementById("requestText").value = "";
+}
+
+function closeRequestModal() {
+  document.getElementById("requestModal").style.display = "none";
+}
+
+function submitTopicRequest() {
+  const text = document.getElementById("requestText").value.trim();
+  const msg = document.getElementById("requestMsg");
+
+  if (!text) {
+    msg.className = "status error";
+    msg.textContent = "Унесите предлог теме.";
+    return;
+  }
+
+  msg.className = "status";
+  msg.textContent = "Слање...";
+
+  fetch('/api/request', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: TOKEN, tema: text })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (!res.ok) {
+      msg.className = "status error";
+      msg.textContent = res.error || "Дошло је до грешке.";
+      return;
+    }
+
+    msg.className = "status success";
+    msg.textContent = res.message || "Предлог је успешно послат.";
+
+    setTimeout(() => {
+      closeRequestModal();
+    }, 700);
+  })
+  .catch(err => {
+    msg.className = "status error";
+    msg.textContent = "Greska pri konekciji: " + err.message;
+  });
+}
+
+function populateSubjectFilter(topics) {
+  const select = document.getElementById("subjectFilter");
+  const currentValue = select.value;
+
+  const subjects = [...new Set(
+    topics
+      .map(t => (t.predmet || "").trim())
+      .filter(Boolean)
+  )].sort((a, b) => a.localeCompare(b, "sr"));
+
+  select.innerHTML = `<option value="">Сви предмети</option>`;
+
+  subjects.forEach(subject => {
+    const opt = document.createElement("option");
+    opt.value = subject;
+    opt.textContent = subject;
+    select.appendChild(opt);
+  });
+
+  if ([...select.options].some(o => o.value === currentValue)) {
+    select.value = currentValue;
+  }
+}
+
+function applyFilter() {
+  const selectedSubject = document.getElementById("subjectFilter").value;
+
+  FILTERED_TOPICS = selectedSubject
+    ? ALL_TOPICS.filter(t => (t.predmet || "").trim() === selectedSubject)
+    : ALL_TOPICS;
+
+  PAGE = 1;
+  renderPage();
+}
+
+
+document.addEventListener("click", function(e) {
+  const modal = document.getElementById("requestModal");
+  if (e.target === modal) {
+    closeRequestModal();
+  }
+});
+
+let PAGE = 1;
+const PER_PAGE = 20;
+let FILTERED_TOPICS = [];
+
+function renderPage() {
+
+  const start = (PAGE - 1) * PER_PAGE;
+  const end = start + PER_PAGE;
+
+  const pageItems = FILTERED_TOPICS.slice(start, end);
+
+  renderTopics(pageItems);
+
+  renderPagination();
+}
+
+function renderPagination() {
+
+  const container = document.getElementById("pagination");
+  container.innerHTML = "";
+
+  const totalPages = Math.ceil(FILTERED_TOPICS.length / PER_PAGE);
+
+  if (totalPages <= 1) {
+    container.style.display = "none";
+    return;
+  }
+
+  container.style.display = "flex";
+
+  for (let i = 1; i <= totalPages; i++) {
+
+    const btn = document.createElement("button");
+    btn.textContent = i;
+
+    if (i === PAGE) {
+      btn.className = "secondary";
+    }
+
+    btn.onclick = () => {
+      PAGE = i;
+      renderPage();
+    };
+
+    container.appendChild(btn);
+  }
+}
+
+
+function goPage(p) {
+  PAGE = p;
+  renderPage();
+}
+
+
+if (TOKEN) loadAll();
+</script>
+
+</body>
+</html>
