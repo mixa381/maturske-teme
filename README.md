@@ -49,19 +49,12 @@ Trebao bi da vidiš:
 Server pokrenut na http://localhost:3000
 ```
 
-## Korak 5: Otvaranje u pregledniku
+## Korak 5: Otvaranje u pregledacu
 
 Otvori pregledac i idi na:
 ```
 http://localhost:3000
 ```
-
-## Testiranje tokena
-
-Koristi jedan od ovih tokena (iz `MaturskeTeme - students.csv`):
-- `IV9-2526-0F9R0` (Михајло А)
-- `IV9-2526-5kpz6` (Јован A)
-- Itd...
 
 ## Gašenje servera
 
